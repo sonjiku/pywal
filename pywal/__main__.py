@@ -70,6 +70,9 @@ def get_args():
     arg.add_argument("--vte", action="store_true",
                      help="Fix text-artifacts printed in VTE terminals.")
 
+    arg.add_argument("--no-fehbg", action="store_true",
+                     help="Use --no-fehbg argument for feh.")
+
     arg.add_argument("-c", action="store_true",
                      help="Delete all cached colorschemes.")
 
@@ -198,7 +201,7 @@ def parse_args(parser):
         colors_plain["colors"]["color0"] = args.b
 
     if not args.n:
-        wallpaper.change(colors_plain["wallpaper"])
+        wallpaper.change(colors_plain["wallpaper"], args.no_fehbg)
 
     if args.p:
         theme.save(colors_plain, args.p, args.l)

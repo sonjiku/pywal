@@ -57,10 +57,13 @@ def xfconf(img):
                      "--property", path, "--set", img])
 
 
-def set_wm_wallpaper(img):
+def set_wm_wallpaper(img, no_fehbg):
     """Set the wallpaper for non desktop environments."""
     if shutil.which("feh"):
-        util.disown(["feh", "--bg-fill", img])
+        if no_fehbg:
+            util.disown(["feh", "--bg-fill", "--no-fehbg", img])
+        else:
+            util.disown(["feh", "--bg-fill", img])
 
     elif shutil.which("xwallpaper"):
         util.disown(["xwallpaper", "--zoom", img])
@@ -88,7 +91,7 @@ def set_wm_wallpaper(img):
         return
 
 
-def set_desktop_wallpaper(desktop, img):
+def set_desktop_wallpaper(desktop, img, no_fehbg):
     """Set the wallpaper for the desktop environment."""
     desktop = str(desktop).lower()
 
@@ -127,7 +130,7 @@ def set_desktop_wallpaper(desktop, img):
         util.disown(["qdbus", "org.kde.plasmashell", "/PlasmaShell",
                      "org.kde.PlasmaShell.evaluateScript", string % img])
     else:
-        set_wm_wallpaper(img)
+        set_wm_wallpaper(img, no_fehbg)
 
 
 def set_mac_wallpaper(img):
@@ -178,7 +181,7 @@ def set_win_wallpaper(img):
         ctypes.windll.user32.SystemParametersInfoA(20, 0, img, 3)
 
 
-def change(img):
+def change(img, no_fehbg):
     """Set the wallpaper."""
     if not os.path.isfile(img):
         return
@@ -192,7 +195,7 @@ def change(img):
         set_win_wallpaper(img)
 
     else:
-        set_desktop_wallpaper(desktop, img)
+        set_desktop_wallpaper(desktop, img, no_fehbg)
 
     logging.info("Set the new wallpaper.")
 
